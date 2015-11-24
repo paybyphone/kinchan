@@ -5,12 +5,13 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/kinesis"
 )
 
 //Consume gets data from a shard of an AWS Kinesis stream and puts them in a Go channel, once every second.
-func Consume(shardID string, streamName string, shardIteratorType string, eventChannel chan []byte) {
-	svc := kinesis.New(nil)
+func Consume(shardID string, streamName string, region string, shardIteratorType string, eventChannel chan []byte) {
+	svc := kinesis.New(session.New(), &aws.Config{Region: aws.String(region)})
 	getShardIteratorParams := &kinesis.GetShardIteratorInput{
 		ShardId:           aws.String(shardID),           // Required
 		ShardIteratorType: aws.String(shardIteratorType), // Required
